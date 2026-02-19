@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin - Users</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+<div class="flex min-h-screen">
+
+  <!-- Sidebar -->
+  <aside class="w-64 bg-gradient-to-b from-indigo-700 to-purple-700 text-white hidden md:block">
+    <div class="text-center py-6 text-2xl font-bold border-b border-white/30">
+      🛒 Admin Panel
+    </div>
+    <nav class="mt-6 space-y-2 px-4">
+      <a href="admin.html" class="block px-4 py-2 rounded hover:bg-white/20">📊 Dashboard</a>
+      <a href="products.html" class="block px-4 py-2 rounded hover:bg-white/20">📦 Products</a>
+      <a href="orders.html" class="block px-4 py-2 rounded hover:bg-white/20">🧾 Orders</a>
+      <a href="users.html" class="block px-4 py-2 rounded bg-white/20">👤 Users</a>
+      <a href="admin-login.html" class="block px-4 py-2 rounded bg-red-500 hover:bg-red-600 mt-6">🚪 Logout</a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-6">
+
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-3xl font-bold">Users</h1>
+      <span class="bg-blue-100 text-blue-700 px-4 py-1 rounded-full text-sm">
+        Total Users
+      </span>
+    </div>
+
+    <!-- Users Table -->
+    <div class="bg-white shadow rounded p-4">
+      <h2 class="text-xl font-semibold mb-4">Registered Users</h2>
+
+      <div class="overflow-x-auto">
+        <table class="w-full border">
+          <thead class="bg-gray-800 text-white">
+            <tr>
+              <th class="border px-3 py-2">ID</th>
+              <th class="border px-3 py-2">Name</th>
+              <th class="border px-3 py-2">Email</th>
+              <th class="border px-3 py-2">Phone</th>
+              <th class="border px-3 py-2">Status</th>
+              <th class="border px-3 py-2">Action</th>
+            </tr>
+          </thead>
+
+          <tbody id="usersTable" class="text-center">
+            <!-- Data will load from backend -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+const BASE_URL = "http://localhost:5000";
+
+async function loadUsers() {
+  const res = await fetch(`${BASE_URL}/users`);
+  const users = await res.json();
+
+  const table = document.getElementById("usersTable");
+  table.innerHTML = "";
+
+  users.forEach(u => {
+    table.innerHTML += `
+      <tr>
+        <td class="border px-3 py-2">${u.id}</td>
+        <td class="border px-3 py-2">${u.name}</td>
+        <td class="border px-3 py-2">${u.email}</td>
+        <td class="border px-3 py-2">${u.phone || "-"}</td>
+        <td class="border px-3 py-2 ${u.status === "active" ? "text-green-600" : "text-red-600"}">
+          ${u.status || "active"}
+        </td>
+        <td class="border px-3 py-2">
+          <button class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">
+            Delete
+          </button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+loadUsers();
+</script>
+
+</body>
+</html>

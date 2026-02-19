@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+<div class="flex min-h-screen">
+  <!-- Sidebar -->
+  <aside class="w-64 bg-gradient-to-b from-indigo-700 to-purple-700 text-white">
+    <div class="text-center py-6 text-2xl font-bold border-b border-white/30">
+      🛒 Admin Panel
+    </div>
+    <nav class="mt-6 space-y-2 px-4">
+      <a href="admin.html" class="block px-4 py-2 rounded bg-white/20">➕ Add Product</a>
+      <a href="products.html" class="block px-4 py-2 rounded hover:bg-white/20">📦 Products</a>
+      <a href="orders.html" class="block px-4 py-2 rounded hover:bg-white/20">🧾 Orders</a>
+      <a href="users.html" class="block px-4 py-2 rounded hover:bg-white/20">👤 Users</a>
+      <a href="login.html" class="block px-4 py-2 rounded bg-red-500 hover:bg-red-600 mt-6">🚪 Logout</a>
+    </nav>
+  </aside>
+  <!-- Main Content -->
+  <main class="flex-1 p-6">
+
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-3xl font-bold">Add New Product</h1>
+      <span class="bg-green-100 text-green-700 px-4 py-1 rounded-full text-sm">
+        Admin Dashboard
+      </span>
+    </div>
+
+    <!-- Form -->
+    <div class="bg-white rounded shadow p-6 mb-6">
+      <form id="productForm" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+        <div>
+          <label class="block mb-1 font-medium">Product Name</label>
+          <input id="name" class="w-full border rounded px-3 py-2 focus:ring focus:ring-blue-300" required>
+        </div>
+        <div>
+          <label class="block mb-1 font-medium">Price</label>
+          <input id="price" type="number" class="w-full border rounded px-3 py-2 focus:ring focus:ring-blue-300" required>
+        </div>
+
+        <div>
+          <label class="block mb-1 font-medium">Category</label>
+          <select id="category" class="w-full border rounded px-3 py-2 focus:ring focus:ring-blue-300">
+            <option value="men">Men</option>
+            <option value="women">Women</option>
+            <option value="kids">Kids</option>
+          </select>
+        </div>
+        <div>
+          <label class="block mb-1 font-medium">Product Image</label>
+          <input type="file" id="image" class="w-full border rounded px-3 py-2" required>
+        </div>
+
+        <div class="flex items-center justify-center border border-dashed rounded">
+          <img id="preview" class="max-h-40 object-contain" />
+        </div>
+
+        <div class="md:col-span-3">
+          <button class="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded font-semibold">
+            ⬆ Upload Product
+          </button>
+        </div>
+      </form>
+    </div>
+    <!-- Table -->
+    <h3 class="text-xl font-semibold mb-3">All Products</h3>
+
+    <div class="bg-white rounded shadow p-4 overflow-x-auto">
+      <table class="w-full border text-center">
+        <thead class="bg-gray-800 text-white">
+  <tr>
+    <th class="border px-3 py-2">ID</th>
+    <th class="border px-3 py-2">Image</th>
+    <th class="border px-3 py-2">Name</th>
+    <th class="border px-3 py-2">Price</th>
+    <th class="border px-3 py-2">Category</th>
+    <th class="border px-3 py-2">Actions</th>
+  </tr>
+</thead>
+<tbody id="productTable"></tbody>
+        <tbody id="productTable"></tbody>
+      </table>
+    </div>
+  </main>
+</div>
+<script src="admin.js"></script>
+</body>
+</html>
