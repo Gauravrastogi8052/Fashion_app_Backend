@@ -46,9 +46,12 @@ router.post("/upload", upload.single("image"), async (req, res) => {
 // Get all products
 router.get("/", async (req, res) => {
   try {
+    console.log("Fetching all products...");
     const products = await Product.findAll();
+    console.log(`Found ${products.length} products`);
     res.json(products);
   } catch (err) {
+    console.error("Error fetching products:", err);
     res.status(500).json({ message: err.message });
   }
 });

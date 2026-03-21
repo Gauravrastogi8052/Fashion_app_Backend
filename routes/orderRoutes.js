@@ -5,6 +5,7 @@ const router = express.Router();
 
 router.post("/create", orderController.createOrder);
 router.put("/update-status", orderController.updateOrderStatus);
-router.get("/", orderController.getOrders);
+router.get("/all", orderController.getAllOrders);  // ✅ Admin - get all orders
+router.get("/", orderController.getOrders);  // User-specific orders
 
 export default router;

@@ -17,7 +17,7 @@ Cart.hasMany(CartItem, { foreignKey: "cartId", as: "CartItems" });
 CartItem.belongsTo(Cart, { foreignKey: "cartId" });
 
 // Product -> CartItem (1:N)
-Product.hasMany(CartItem, { foreignKey: "productId" });
+Product.hasMany(CartItem, { foreignKey: "productId"  });
 CartItem.belongsTo(Product, { foreignKey: "productId" });
 
 // User -> Order (1:N)
@@ -29,7 +29,7 @@ Order.hasMany(OrderItem, { foreignKey: "orderId" });
 OrderItem.belongsTo(Order, { foreignKey: "orderId" });
 
 // Product -> OrderItem (1:N)
-Product.hasMany(OrderItem, { foreignKey: "productId" });
+Product.hasMany(OrderItem, { foreignKey: "productId" , onDelete: "CASCADE"});
 OrderItem.belongsTo(Product, { foreignKey: "productId" });
 
 // Order -> Payment (1:1)
