@@ -19,7 +19,8 @@ import "./models/index.js";  // <-- ye import sab models aur associations load k
 // Setup __dirname for ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
+import cron from "node-cron";
+import { backupDatabase } from "./utils/backupService.js";
 dotenv.config();
 connectDB();
 
@@ -56,4 +57,9 @@ app.use("/users", userRoutes);  // ✅ Users API
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on port ${PORT}`);
+});
+console.log("✅ Cron initialized...");
+cron.schedule("* * * * *", () => {
+  console.log("⏰ Running backup...");
+  backupDatabase();
 });

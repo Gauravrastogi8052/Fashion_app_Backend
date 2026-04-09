@@ -7,10 +7,17 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #333;
     }
 
     .sidebar {
@@ -19,27 +26,109 @@
       top: 0;
       height: 100vh;
       z-index: 50;
+      overflow-y: auto;
     }
 
     .main-content {
       margin-left: 256px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
     }
 
     .report-card {
       transition: all 0.3s ease;
+      border-radius: 16px;
+      background: white;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
     }
 
     .report-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      transform: translateY(-8px);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+    }
+
+    .report-card-header {
+      text-align: center;
+      padding: 2rem 0 1.5rem 0;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    .report-card-content {
+      flex: 1;
+      padding: 1.5rem 0;
     }
 
     .btn-download {
       transition: all 0.3s ease;
+      font-weight: 600;
+      letter-spacing: 0.5px;
     }
 
     .btn-download:hover {
-      transform: translateY(-2px);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .history-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .history-card {
+      padding: 1.5rem;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .history-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .history-card button {
+      margin-top: auto;
+    }
+
+    .tips-section {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 12px;
+      border-left: 5px solid #4f46e5;
+    }
+
+    .tips-section h4 {
+      color: #4f46e5;
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+    }
+
+    .tips-section ul {
+      list-style: none;
+    }
+
+    .tips-section li {
+      color: #555;
+      margin-bottom: 0.75rem;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .report-feature-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .report-feature-list li {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: #555;
+      font-size: 0.95rem;
     }
 
     @media (max-width: 768px) {
@@ -54,6 +143,10 @@
 
       .main-content {
         margin-left: 0;
+      }
+
+      .history-grid {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -100,10 +193,10 @@
   <main class="main-content flex-1 p-4 md:p-8 overflow-auto">
 
     <!-- Header -->
-    <div class="flex justify-between items-center mb-8">
+    <div class="flex justify-between items-center mb-10">
       <div>
-        <h1 class="text-4xl font-bold text-white mb-1">📊 Reports</h1>
-        <p class="text-white/70">Download business reports in PDF format</p>
+        <h1 class="text-4xl font-bold text-white mb-2">📊 Reports</h1>
+        <p class="text-white/80 text-lg">Generate and download comprehensive business reports</p>
       </div>
       <button class="md:hidden text-white text-2xl" onclick="toggleSidebar()" title="Toggle sidebar menu">
         <i class="fas fa-bars"></i>
@@ -111,129 +204,174 @@
     </div>
 
     <!-- Reports Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
 
       <!-- Orders Report Card -->
-      <div class="report-card bg-white rounded-2xl shadow-lg p-8">
-        <div class="text-center mb-6">
-          <div class="text-5xl mb-3">📋</div>
+      <div class="report-card">
+        <div class="report-card-header">
+          <div class="text-6xl mb-4">📋</div>
           <h2 class="text-2xl font-bold text-gray-900">Orders Report</h2>
-          <p class="text-gray-600 mt-2">Download all orders data with detailed information</p>
+          <p class="text-gray-600 text-sm mt-3">Download all orders data with detailed information</p>
         </div>
 
-        <div class="space-y-3 mb-6">
-          <label class="block">
-            <span class="text-sm font-semibold text-gray-700 mb-2 block">Select Time Period</span>
-            <select id="ordersperiod" class="w-full border-2 border-gray-300 rounded-lg px-4 py-3 focus:border-indigo-600 focus:outline-none">
-              <option value="today">📅 Today</option>
-              <option value="week">📆 Last 7 Days</option>
-              <option value="month" selected>📊 This Month</option>
-            </select>
-          </label>
+        <div class="report-card-content px-8">
+          <div class="mb-6">
+            <label class="block">
+              <span class="text-sm font-semibold text-gray-800 mb-3 block">Select Time Period</span>
+              <select id="ordersperiod" class="w-full border-2 border-gray-300 rounded-lg px-4 py-3 focus:border-indigo-600 focus:outline-none">
+                <option value="today">📅 Today</option>
+                <option value="week">📆 Last 7 Days</option>
+                <option value="month" selected>📊 This Month</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="mb-6">
+            <p class="text-sm font-semibold text-gray-800 mb-3">Report Includes:</p>
+            <ul class="report-feature-list text-sm">
+              <li><span class="text-green-600">✓</span> Order IDs and amounts</li>
+              <li><span class="text-green-600">✓</span> Customer information</li>
+              <li><span class="text-green-600">✓</span> Order statuses</li>
+              <li><span class="text-green-600">✓</span> Dates and summary</li>
+            </ul>
+          </div>
         </div>
 
-        <div class="space-y-2">
-          <p class="text-sm text-gray-600">Includes:</p>
-          <ul class="text-sm text-gray-700 space-y-1">
-            <li>✓ Order IDs and amounts</li>
-            <li>✓ Customer information</li>
-            <li>✓ Order statuses</li>
-            <li>✓ Dates and summary</li>
-          </ul>
+        <div class="px-8 pb-8">
+          <button onclick="downloadOrdersReport()" class="btn-download w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white py-3 rounded-lg flex items-center justify-center space-x-2 transition">
+            <i class="fas fa-download"></i>
+            <span>Download PDF</span>
+          </button>
         </div>
-
-        <button onclick="downloadOrdersReport()" class="btn-download w-full mt-6 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white py-3 rounded-lg font-semibold flex items-center justify-center space-x-2 transition">
-          <i class="fas fa-download"></i>
-          <span>Download PDF</span>
-        </button>
       </div>
 
       <!-- Revenue Report Card -->
-      <div class="report-card bg-white rounded-2xl shadow-lg p-8">
-        <div class="text-center mb-6">
-          <div class="text-5xl mb-3">💰</div>
+      <div class="report-card">
+        <div class="report-card-header">
+          <div class="text-6xl mb-4">💰</div>
           <h2 class="text-2xl font-bold text-gray-900">Revenue Report</h2>
-          <p class="text-gray-600 mt-2">Track your revenue and financial performance</p>
+          <p class="text-gray-600 text-sm mt-3">Track your revenue and financial performance</p>
         </div>
 
-        <div class="space-y-3 mb-6">
-          <label class="block">
-            <span class="text-sm font-semibold text-gray-700 mb-2 block">Select Time Period</span>
-            <select id="revenueperiod" class="w-full border-2 border-gray-300 rounded-lg px-4 py-3 focus:border-indigo-600 focus:outline-none">
-              <option value="today">📅 Today</option>
-              <option value="week">📆 Last 7 Days</option>
-              <option value="month" selected>📊 This Month</option>
-            </select>
-          </label>
+        <div class="report-card-content px-8">
+          <div class="mb-6">
+            <label class="block">
+              <span class="text-sm font-semibold text-gray-800 mb-3 block">Select Time Period</span>
+              <select id="revenueperiod" class="w-full border-2 border-gray-300 rounded-lg px-4 py-3 focus:border-indigo-600 focus:outline-none">
+                <option value="today">📅 Today</option>
+                <option value="week">📆 Last 7 Days</option>
+                <option value="month" selected>📊 This Month</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="mb-6">
+            <p class="text-sm font-semibold text-gray-800 mb-3">Report Includes:</p>
+            <ul class="report-feature-list text-sm">
+              <li><span class="text-green-600">✓</span> Total revenue earned</li>
+              <li><span class="text-green-600">✓</span> Order-wise breakdown</li>
+              <li><span class="text-green-600">✓</span> Average order value</li>
+              <li><span class="text-green-600">✓</span> Financial summary</li>
+            </ul>
+          </div>
         </div>
 
-        <div class="space-y-2">
-          <p class="text-sm text-gray-600">Includes:</p>
-          <ul class="text-sm text-gray-700 space-y-1">
-            <li>✓ Total revenue earned</li>
-            <li>✓ Order-wise breakdown</li>
-            <li>✓ Average order value</li>
-            <li>✓ Financial summary</li>
-          </ul>
+        <div class="px-8 pb-8">
+          <button onclick="downloadRevenueReport()" class="btn-download w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-3 rounded-lg flex items-center justify-center space-x-2 transition">
+            <i class="fas fa-download"></i>
+            <span>Download PDF</span>
+          </button>
         </div>
-
-        <button onclick="downloadRevenueReport()" class="btn-download w-full mt-6 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-3 rounded-lg font-semibold flex items-center justify-center space-x-2 transition">
-          <i class="fas fa-download"></i>
-          <span>Download PDF</span>
-        </button>
       </div>
-
     </div>
 
     <!-- Previous Reports Section -->
-    <div class="mt-12 bg-white rounded-2xl shadow-lg p-8">
-      <h3 class="text-2xl font-bold text-gray-900 mb-6">
+    <div class="mt-12 bg-white rounded-xl shadow-lg p-8">
+      <h3 class="text-2xl font-bold text-gray-900 mb-8 pb-4 border-b-2 border-gray-200">
         <i class="fas fa-history mr-3 text-indigo-600"></i>Report History
       </h3>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="history-grid">
         <!-- Today's Reports -->
-        <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl border-2 border-blue-200">
-          <h4 class="font-bold text-blue-900 mb-3">📅 Today's Reports</h4>
-          <p class="text-sm text-blue-800 mb-3">All reports you downloaded today</p>
-          <button onclick="downloadOrdersReport('today')" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg text-sm font-semibold transition">Orders</button>
-          <button onclick="downloadRevenueReport('today')" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg text-sm font-semibold transition mt-2">Revenue</button>
+        <div class="history-card bg-gradient-to-br from-blue-50 to-blue-100 border-t-4 border-blue-400">
+          <h4 class="font-bold text-blue-900 mb-2 flex items-center gap-2">
+            <span class="text-xl">📅</span> Today
+          </h4>
+          <p class="text-sm text-blue-800 mb-5 flex-grow">All reports you downloaded today</p>
+          <button onclick="downloadOrdersReport('today')" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2.5 rounded-lg text-sm font-semibold transition">
+            <i class="fas fa-download mr-2"></i>Orders
+          </button>
+          <button onclick="downloadRevenueReport('today')" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2.5 rounded-lg text-sm font-semibold transition mt-2">
+            <i class="fas fa-download mr-2"></i>Revenue
+          </button>
         </div>
 
         <!-- Weekly Reports -->
-        <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-xl border-2 border-purple-200">
-          <h4 class="font-bold text-purple-900 mb-3">📆 Weekly Reports</h4>
-          <p class="text-sm text-purple-800 mb-3">Last 7 days summary</p>
-          <button onclick="downloadOrdersReport('week')" class="w-full bg-purple-500 hover:bg-purple-600 text-white py-2 rounded-lg text-sm font-semibold transition">Orders</button>
-          <button onclick="downloadRevenueReport('week')" class="w-full bg-purple-500 hover:bg-purple-600 text-white py-2 rounded-lg text-sm font-semibold transition mt-2">Revenue</button>
+        <div class="history-card bg-gradient-to-br from-purple-50 to-purple-100 border-t-4 border-purple-400">
+          <h4 class="font-bold text-purple-900 mb-2 flex items-center gap-2">
+            <span class="text-xl">📆</span> Weekly
+          </h4>
+          <p class="text-sm text-purple-800 mb-5 flex-grow">Last 7 days summary</p>
+          <button onclick="downloadOrdersReport('week')" class="w-full bg-purple-500 hover:bg-purple-600 text-white py-2.5 rounded-lg text-sm font-semibold transition">
+            <i class="fas fa-download mr-2"></i>Orders
+          </button>
+          <button onclick="downloadRevenueReport('week')" class="w-full bg-purple-500 hover:bg-purple-600 text-white py-2.5 rounded-lg text-sm font-semibold transition mt-2">
+            <i class="fas fa-download mr-2"></i>Revenue
+          </button>
         </div>
 
         <!-- Monthly Reports -->
-        <div class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl border-2 border-green-200">
-          <h4 class="font-bold text-green-900 mb-3">📊 Monthly Reports</h4>
-          <p class="text-sm text-green-800 mb-3">This month's data</p>
-          <button onclick="downloadOrdersReport('month')" class="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg text-sm font-semibold transition">Orders</button>
-          <button onclick="downloadRevenueReport('month')" class="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg text-sm font-semibold transition mt-2">Revenue</button>
+        <div class="history-card bg-gradient-to-br from-green-50 to-green-100 border-t-4 border-green-400">
+          <h4 class="font-bold text-green-900 mb-2 flex items-center gap-2">
+            <span class="text-xl">📊</span> Monthly
+          </h4>
+          <p class="text-sm text-green-800 mb-5 flex-grow">This month's data</p>
+          <button onclick="downloadOrdersReport('month')" class="w-full bg-green-500 hover:bg-green-600 text-white py-2.5 rounded-lg text-sm font-semibold transition">
+            <i class="fas fa-download mr-2"></i>Orders
+          </button>
+          <button onclick="downloadRevenueReport('month')" class="w-full bg-green-500 hover:bg-green-600 text-white py-2.5 rounded-lg text-sm font-semibold transition mt-2">
+            <i class="fas fa-download mr-2"></i>Revenue
+          </button>
         </div>
 
-        <!-- Custom Reports -->
-        <div class="bg-gradient-to-br from-orange-50 to-orange-100 p-6 rounded-xl border-2 border-orange-200">
-          <h4 class="font-bold text-orange-900 mb-3">⚡ Quick Downloads</h4>
-          <p class="text-sm text-orange-800 mb-3">One-click downloads</p>
-          <button onclick="downloadAllReports()" class="w-full bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg text-sm font-semibold transition">All Reports</button>
-          <button onclick="alert('Coming soon!')" class="w-full bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg text-sm font-semibold transition mt-2">Custom Date</button>
+        <!-- Quick Downloads -->
+        <div class="history-card bg-gradient-to-br from-orange-50 to-orange-100 border-t-4 border-orange-400">
+          <h4 class="font-bold text-orange-900 mb-2 flex items-center gap-2">
+            <span class="text-xl">⚡</span> Quick Access
+          </h4>
+          <p class="text-sm text-orange-800 mb-5 flex-grow">One-click downloads</p>
+          <button onclick="downloadAllReports()" class="w-full bg-orange-500 hover:bg-orange-600 text-white py-2.5 rounded-lg text-sm font-semibold transition">
+            <i class="fas fa-download mr-2"></i>All Reports
+          </button>
+          <button onclick="alert('Coming soon!')" class="w-full bg-orange-400 hover:bg-orange-500 text-white py-2.5 rounded-lg text-sm font-semibold transition mt-2">
+            <i class="fas fa-calendar mr-2"></i>Custom Date
+          </button>
         </div>
       </div>
     </div>
 
     <!-- Tips Section -->
-    <div class="mt-8 bg-indigo-100 border-l-4 border-indigo-600 p-6 rounded-lg">
-      <h4 class="font-bold text-indigo-900 mb-2">💡 Tips</h4>
-      <ul class="text-sm text-indigo-800 space-y-1">
-        <li>• Use "Today" for daily performance tracking</li>
-        <li>• Use "Week" for weekly trend analysis</li>
-        <li>• Use "Month" for monthly financial reports</li>
-        <li>• PDFs are automatically generated and include timestamps</li>
+    <div class="mt-8 tips-section p-6">
+      <h4 class="font-bold mb-4">
+        <i class="fas fa-lightbulb mr-2"></i>Tips for Better Reports
+      </h4>
+      <ul>
+        <li>
+          <i class="fas fa-check-circle text-green-600 mr-2"></i>
+          <strong>Today:</strong> Use for daily performance tracking and analysis
+        </li>
+        <li>
+          <i class="fas fa-check-circle text-green-600 mr-2"></i>
+          <strong>Week:</strong> Use for weekly trend analysis and comparisons
+        </li>
+        <li>
+          <i class="fas fa-check-circle text-green-600 mr-2"></i>
+          <strong>Month:</strong> Use for monthly financial reports and summaries
+        </li>
+        <li>
+          <i class="fas fa-check-circle text-green-600 mr-2"></i>
+          <strong>PDF Format:</strong> All reports include timestamps and are ready to share
+        </li>
       </ul>
     </div>
 
