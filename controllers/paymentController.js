@@ -59,7 +59,7 @@ export const verifyPayment = async (req, res) => {
 
     const paymentRecord = await Payment.findOne({
       where: { razorpayOrderId: razorpay_order_id },
-      transaction: t
+      transaction: t  
     });
 
     if (!paymentRecord) {

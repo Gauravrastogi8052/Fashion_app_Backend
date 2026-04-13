@@ -25,7 +25,7 @@ dotenv.config();
 connectDB();
 
 // Sync sequelize models with database
-sequelize.sync({ alter: false })
+sequelize.sync({ force: false, alter: false })
     .then(() => {
         console.log("✅ Database schema updated!");
     })
@@ -59,7 +59,7 @@ app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on port ${PORT}`);
 });
 console.log("✅ Cron initialized...");
-cron.schedule("* * * * *", () => {
+cron.schedule("*/5 * * * *", () => {
   console.log("⏰ Running backup...");
   backupDatabase();
 });

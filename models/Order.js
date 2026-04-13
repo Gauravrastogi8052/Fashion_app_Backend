@@ -5,4 +5,6 @@ export const Order = sequelize.define("Order", {
   userId: { type: DataTypes.INTEGER, allowNull: false },
   totalAmount: { type: DataTypes.FLOAT, allowNull: false },
   status: { type: DataTypes.STRING, defaultValue: "pending" },
-}, { timestamps: true });
+  createdAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
+  updatedAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW }
+}, { timestamps: false });  // timestamps: false karo kyunki manually kar diye

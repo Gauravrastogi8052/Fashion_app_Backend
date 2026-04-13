@@ -6,7 +6,7 @@ export const getAllUsers = async (req, res) => {
   try {
     // Fetch all users
     const users = await User.findAll({
-      attributes: ['id', 'name', 'email', 'createdAt', 'updatedAt'],
+      attributes: ['id', 'name', 'email', 'phone', 'address', 'city', 'state', 'pinCode', 'createdAt', 'updatedAt'],
       order: [['id', 'DESC']]
     });
 
@@ -25,7 +25,11 @@ export const getAllUsers = async (req, res) => {
         id: user.id,
         name: user.name,
         email: user.email,
-        phone: '-',
+        phone: user.phone || '-',
+        address: user.address || '-',
+        city: user.city || '-',
+        state: user.state || '-',
+        pinCode: user.pinCode || '-',
         status: 'active',
         joinDate: user.createdAt,
         orderCount: orderCount,
@@ -79,5 +83,33 @@ export const deleteUser = async (req, res) => {
   } catch (error) {
     console.error("Error deleting user:", error);
     res.status(500).json({ error: "Failed to delete user" });
+  }
+};
+
+// Update user profile
+export const updateUserProfile = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, email, phone, address, city, state, pinCode } = req.body;
+
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Update only provided fields
+    if (name) user.name = name;
+    if (email) user.email = email;
+    if (phone) user.phone = phone;
+    if (address) user.address = address;
+    if (city) user.city = city;
+    if (state) user.state = state;
+    if (pinCode) user.pinCode = pinCode;
+
+    await user.save();
+    res.json({ message: "User profile updated successfully", user });
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res.status(500).json({ error: "Failed to update user" });
   }
 };
